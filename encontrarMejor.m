@@ -11,7 +11,6 @@ function [pos, cc] = encontrarMejor(v1, v2)
       endif
     endfor
     pos = 1;
-    cc = 0;
   else
     aux = 0; % esta variable se usa como bandera para almacenar el mayor cc
     cc = 0;
