@@ -5,7 +5,8 @@ mat_salidaColumnas = length(mat_casos(1,:));
 mat_salidaFilas = length(mat_casos(:,1));
 fallos = [];
 
-mat_salida = [1:mat_salidaFilas;1:mat_salidaColumnas];
+sz = size(mat_salida_ref);
+mat_salida = zeros(sz);
 
 for i = 1:mat_salidaFilas
   [pos, cc] = encontrearMejor(vect_ref, mat_casos(i,:));
