@@ -5,6 +5,7 @@ function [pos, cc] = encontrarMejor(v1, v2)
     pos = -1;
     cc = -1;
   elseif n1 == n2
+    cc = 0;
     for i = 1:n1
       if v1(i) == v2(i)
         cc = cc + 1;
