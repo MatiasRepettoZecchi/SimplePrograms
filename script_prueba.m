@@ -1,5 +1,5 @@
 clear;
-casos_de_prueba.m
+casos_de_prueba
 
 mat_salidaColumnas = length(mat_casos(1,:));
 mat_salidaFilas = length(mat_casos(:,1));
