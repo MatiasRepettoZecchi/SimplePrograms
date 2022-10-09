@@ -1,0 +1,164 @@
+
+
+----------------------------------------------------------------------------------------------
+
+// SEND ETH TO ANOTHER ACCOUNT USING GETH
+
+> var sender = eth.accounts[0];
+> var receiver = eth.accounts[1];
+> var amount = web3.toWei(0.01, "ether")
+> eth.sendTransaction({from:sender, to:receiver, value: amount})
+
+----------------------------------------------------------------------------------------------
+
+// SOLIDITY ULTRA BASICS
+
+pragma solidity ^0.4.0;
+
+//This is a contract
+contract helloWorld {
+    string hw;
+    function set(string x) public {
+        hw = x;
+    }
+    function get() public constant returns (string) {
+        return hw;
+    }
+}
+
+The first line pragma solidity mentions the version of the compiler to be used.
+The contract keyword is used to define a contract, all the code is written inside a contract.
+The contract is analogous to class in Java in programming.
+The function keyword is used define a function.
+
+Booleans are represented by the bool keyword. Their value is either true/ false.
+Integers in Solidity are represented by int keyword. There are other variants of int that are commonly used like unit, uint256, and uint8.
+Address is a 20-byte address of an ethereum account. The address keyword is used to represent it.
+Address is a type that is unique to Solidity programming language and has two members - balance and transfer.
+Strings in Solidity are represented using the string keyword.
+Enums are user-defined types and are similar to enums used in other programming languages, the enum keyword is used to define an enum.
+
+Comparisons: <=, <, ==, !=, >=, > (evaluate to bool)
+Bit operators: &, |, ^ (bitwise exclusive or), ~ (bitwise negation)
+Shift operators: << (left shift), >> (right shift)
+Arithmetic operators: +(Addition), -(Subtraction), * (Multiplictaion), / (Division), % (modulo), ** (exponentiation)
+Logical Operators: ! (negation), && (Logical AND), ||(Logical OR)
+Function Operators() {}
+
+Syntax of Arrays is type[size] variable-name.
+Example:
+uint[3] fixed;  //array of fixed length 3
+uint[] dynamic; //dynamic length array
+
+Syntax of Structs is struct variable-name {...}
+Example:
+pragma solidity ^0.4.0;
+contract Ballot {
+    struct Voter { // Struct
+        uint weight1, weight2, weight3;
+        bool voted;
+        address delegate1, delegate2, delegate3, delegate4;
+        string name;
+        uint vote1, vote2, vote3, vote4, vote5;
+        uint height1, height2, height3 
+    } 
+}
+
+As Structs are also datatypes, Arrays of structs can also be created.
+Example:
+Voter[5] votervariable
+
+Syntax of maps is `mapping(key => value)
+Note: The Key can be of any type except for a dynamically sized array, a contract, an enum, and a struct.
+
+Example:
+pragma solidity ^0.4.0;
+
+contract MappingExample {
+    mapping(address => uint) public balances;
+
+    function update(uint newBalance) public {
+            balances[msg.sender] = newBalance;
+    }
+}
+
+contract MappingUser {
+    function f() public returns (uint) {
+            MappingExample m = new MappingExample();
+            m.update(100);
+            return m.balances(this);
+    }
+}
+
+The conditional statements and control structures present are: if, else, while, do, for, break, continue, return,
+ ? :(ternary operator), with similar semantics to other languages.
+
+Syntax of a function definition function function-name (arguments) access-specifier returns(return-type){...}
+Syntax for calling a function function-name (arguments);
+
+----------------------------------------------------------------------------------------------
+
+//CONTRACTS ACCOUNTS
+
+Create a private test network to deploy and test your DApp.
+Create a contract account by creating a smart contract using Solidity.
+Example: stateChangeTest.sol
+pragma solidity ^0.4.0;
+    contract stateChangeTest {
+    uint256 storedData;
+        function store(uint256 data) {
+            storedData = data * 10;
+        }
+         function fetch() constant returns (uint256) {
+        return storedData;
+      }
+    }
+Compile the solidity code by opening the geth console and typing the following command. solc -o ./out --optimize --abi --bin {FileName}
+Example:
+solc -o ./out --optimize --abi –bin sateChangeTest.sol
+
+Deploying a contract (From node terminal).
+
+a) Copy “.abi” file content to a variable E.g.,
+
+var t1contractabi = '[{"constant":false,"inputs":[{"name":"data","type":"uint256"}],"name":"store","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"fetch","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}]'
+ b) Copy “.bin” file content to a variable
+var t1codebin="0x"+ "6060604052341561000f57600080fd5b60be8061001d6000396000f30060606040526004361060485763ffffffff7c01000000000000000000000000000000000000000000000000000000006000350416636057361d8114604d578063a95c372d146062575b600080fd5b3415605757600080fd5b60606004356084565b005b3415606c57600080fd5b6072608c565b60405190815260200160405180910390f35b600c02600055565b600054905600a165627a7a723058201c9f6c013e9541477794933e54529251a6d3eaefdc99024d27ca1ab8af152f9d0029"
+c) Get the contract.
+
+myt1contract = eth.contract(JSON.parse(t1contractabi))
+d) Unlock the account to be used for contract deployment.
+
+personal.unlockAccount(eth.accounts[0])
+primaryaddr = eth.accounts[0]
+e) Deploy contract.
+
+var t1contractInstance = myt1contract.new({from: primaryaddr, data: t1codebin, gas: 2000000  })
+f) Set Miner account, start and stop the miner and get the contract address.
+
+eth.getTransactionReceipt(t1contractInstance.transactionHash)
+Note down the contract address to use for sending a transaction using contracts.
+
+Deploying a contract (From node terminal)
+
+b) Invoke contract methods for transactions t1= myt1contract.at("{Contract Address}") Eg:-
+
+t1 = myt1contract.at("0x16eb049bb6fcce6c89aa0bcf771c552d6ec37008")
+
+  t1.fetch.call() 
+The above command will not initiate any transaction as it is a call. It will return 0
+
+t1.store.sendTransaction(5, {from: eth.accounts[0], gas: 100000})
+The above command will initiate a transaction.
+
+c) Set Miner account, start and stop the miner.
+
+miner.start(1)
+miner.stop()
+d) Check the result.
+
+  t1.fetch.call() 
+         This will return 50
+
+----------------------------------------------------------------------------------------------
+
